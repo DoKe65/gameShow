@@ -2,13 +2,7 @@ const phrase = document.getElementById('phrase');
 const qwerty = document.getElementById('qwerty');
 let missed = 0;
 
-const startButton = document.querySelector('.btn__reset');
-const startScreen = document.getElementById('overlay');
-
-const scoreboard = document.querySelector('#scoreboard');
-
 const ul = phrase.querySelector('ul');
-
 const phrases = [
   "Live is a journey",
   "Happy new year",
@@ -19,13 +13,8 @@ const phrases = [
   "Someday never comes"
 ];
 
-// Start play
-startButton.addEventListener('click', (e) => {
-  startScreen.style.display = "none";
-  if (startScreen.className === "win" || startScreen.className === "lose") {
-    location.reload();
-  }
-});
+const startButton = document.querySelector('.btn__reset');
+const startScreen = document.getElementById('overlay');
 
 // Choose random phrase
 function getRandomPhraseArray(array) {
@@ -50,27 +39,45 @@ function addPhraseToDisplay(array) {
   }
 }
 
+// reset game
+function clearGame() {
+  missed = 0;
+  // reset phrase section
+  let phraseUl = document.querySelector('ul');
+  let phraseSection = phraseUl.parentNode;
+  phraseSection.removeChild(phraseUl);
+  let newUl = document.createElement('ul');
+  phraseSection.appendChild(newUl);
+  // reset keyboard
+  let quertyKeys = document.querySelectorAll('.chosen');
+  for (let i = 0; i < quertyKeys.length; i++) {
+    quertyKeys[i].setAttribute('disabled', false);
+    quertyKeys[i].classList.remove('chosen');
+  }
+  // reset lives
+  const ol = document.querySelector('ol');
+  const lives = ol.querySelectorAll('img');
+  for (let i = 0; i < lives.length; i++) {
+    lives[i].setAttribute('src', 'images/liveHeart.png');
+  }
+  addPhraseToDisplay(phrases);
+}
+
+
+
 // check keyboard input to compare with letters in phrase
 qwerty.addEventListener('click', (e) => {
   let letterFound;
   if (e.target.tagName === "BUTTON") {
     const clicked = e.target;
-    const letterChosen = clicked.textContent;
-
-    // console.log(letterChosen); --> funktioniert, gibt Buchstabe zurück
     const lis = ul.children;
-    // console.log(lis.length); funktioniert, gibt länge des arrays zurück
     const letters = [];
-    //const lettersUsed = [];
-
 
     for (let i = 0; i < lis.length; i++) {
       if (lis[i].className === "letter") {
         letters.push(lis[i]);
       }
     }
-    // console.log(letters); gibt den Satz als einzelne Arrays zurück, wenn "letters.push(lis[i].textContent)"
-    // console.log(letters[2].textContent); gibt den 3 Buchstaben zurück wenn "letters.push(lis[i]);"
 
     function checkLetter (clicked) {
       let letter = null;
@@ -78,7 +85,6 @@ qwerty.addEventListener('click', (e) => {
         if(clicked.textContent === letters[i].textContent.toLowerCase()) {
           letter = letters[i].textContent.toLowerCase();
           letters[i].classList.add("show");
-          //console.log(letters[i]);
         }
         clicked.classList.add("chosen");
         clicked.setAttribute("disabled", true);
@@ -97,23 +103,28 @@ qwerty.addEventListener('click', (e) => {
     function checkWin() {
       const show = document.getElementsByClassName('show');
       const letters = document.getElementsByClassName('letter');
+      startButton.textContent = "Reset Game";
+
       if (show.length === letters.length) {
+        clearGame();
         startScreen.classList.remove('start');
         startScreen.classList.add('win');
         startScreen.style.display = "flex";
       } else if (missed >= 5) {
+        clearGame();
         startScreen.classList.remove('start');
         startScreen.classList.add('lose');
         startScreen.style.display = "flex";
       }
-
     }
   }
   checkWin();
-
-  //console.log(letterFound);
 });
 
+// Start play
+startButton.addEventListener('click', (e) => {
+  //addPhraseToDisplay(phrases);
+  startScreen.style.display = "none";
+});
 
-// display the phrase
 addPhraseToDisplay(phrases);
