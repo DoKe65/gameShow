@@ -5,7 +5,7 @@ let missed = 0;
 const startButton = document.querySelector('.btn__reset');
 const startScreen = document.getElementById('overlay');
 
-//const scoreboard = document.querySelector('#scoreboard');
+const scoreboard = document.querySelector('#scoreboard');
 
 const ul = phrase.querySelector('ul');
 
@@ -22,6 +22,9 @@ const phrases = [
 // Start play
 startButton.addEventListener('click', (e) => {
   startScreen.style.display = "none";
+  if (startScreen.className === "win" || startScreen.className === "lose") {
+    location.reload();
+  }
 });
 
 // Choose random phrase
@@ -58,7 +61,7 @@ qwerty.addEventListener('click', (e) => {
     const lis = ul.children;
     // console.log(lis.length); funktioniert, gibt länge des arrays zurück
     const letters = [];
-    const lettersUsed = [];
+    //const lettersUsed = [];
 
 
     for (let i = 0; i < lis.length; i++) {
@@ -72,8 +75,8 @@ qwerty.addEventListener('click', (e) => {
     function checkLetter (clicked) {
       let letter = null;
       for (let i = 0; i < letters.length; i++) {
-        if(clicked.textContent === letters[i].textContent) {
-          letter = letters[i].textContent;
+        if(clicked.textContent === letters[i].textContent.toLowerCase()) {
+          letter = letters[i].textContent.toLowerCase();
           letters[i].classList.add("show");
           //console.log(letters[i]);
         }
@@ -85,14 +88,29 @@ qwerty.addEventListener('click', (e) => {
     letterFound = checkLetter(clicked);
 
     if (letterFound === null) {
-      missed++;
       const ol = document.querySelector('ol');
-      const live = document.querySelector('.tries');
-      // ol.removeChild(live);
-      live.firstChild.setAttribute('src', 'images/lostHeart.png');
-      //console.log(missed);
+      const lives = ol.getElementsByTagName('img');
+      lives[missed].setAttribute('src', 'images/lostHeart.png');
+      missed++;
+    }
+
+    function checkWin() {
+      const show = document.getElementsByClassName('show');
+      const letters = document.getElementsByClassName('letter');
+      if (show.length === letters.length) {
+        startScreen.classList.remove('start');
+        startScreen.classList.add('win');
+        startScreen.style.display = "flex";
+      } else if (missed >= 5) {
+        startScreen.classList.remove('start');
+        startScreen.classList.add('lose');
+        startScreen.style.display = "flex";
+      }
+
     }
   }
+  checkWin();
+
   //console.log(letterFound);
 });
 
