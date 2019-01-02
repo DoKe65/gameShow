@@ -37,33 +37,48 @@ function addPhraseToDisplay(array) {
       }
     ul.appendChild(li);
   }
+  // return letters;
 }
 
-// reset game
-function clearGame() {
-  missed = 0;
-  // reset phrase section
+// reset phrase section
+function resetPhrase() {
   let phraseUl = document.querySelector('ul');
   let phraseSection = phraseUl.parentNode;
   phraseSection.removeChild(phraseUl);
   let newUl = document.createElement('ul');
   phraseSection.appendChild(newUl);
-  // reset keyboard
+  // let phrases = getRandomPhraseArray(array);
+  // addPhraseToDisplay(array);
+  // return phrases;
+}
+
+// reset keyboard
+function resetKeyboard() {
   let quertyKeys = document.querySelectorAll('.chosen');
   for (let i = 0; i < quertyKeys.length; i++) {
     quertyKeys[i].setAttribute('disabled', false);
     quertyKeys[i].classList.remove('chosen');
   }
-  // reset lives
+}
+
+// reset lives
+function resetHearts() {
   const ol = document.querySelector('ol');
   const lives = ol.querySelectorAll('img');
   for (let i = 0; i < lives.length; i++) {
     lives[i].setAttribute('src', 'images/liveHeart.png');
   }
-  addPhraseToDisplay(phrases);
 }
 
 
+// reset game
+function clearGame() {
+  missed = 0;
+  resetPhrase();
+  resetKeyboard();
+  resetHearts();
+  //addPhraseToDisplay(array);
+}
 
 // check keyboard input to compare with letters in phrase
 qwerty.addEventListener('click', (e) => {
@@ -78,7 +93,7 @@ qwerty.addEventListener('click', (e) => {
         letters.push(lis[i]);
       }
     }
-
+    checkLetter(clicked);
     function checkLetter (clicked) {
       let letter = null;
       for (let i = 0; i < letters.length; i++) {
@@ -99,32 +114,34 @@ qwerty.addEventListener('click', (e) => {
       lives[missed].setAttribute('src', 'images/lostHeart.png');
       missed++;
     }
-
-    function checkWin() {
-      const show = document.getElementsByClassName('show');
-      const letters = document.getElementsByClassName('letter');
-      startButton.textContent = "Reset Game";
-
-      if (show.length === letters.length) {
-        clearGame();
-        startScreen.classList.remove('start');
-        startScreen.classList.add('win');
-        startScreen.style.display = "flex";
-      } else if (missed >= 5) {
-        clearGame();
-        startScreen.classList.remove('start');
-        startScreen.classList.add('lose');
-        startScreen.style.display = "flex";
-      }
-    }
   }
   checkWin();
 });
 
+function checkWin() {
+  const show = document.getElementsByClassName('show');
+  const letters = document.getElementsByClassName('letter');
+  startButton.textContent = "Reset Game";
+
+  if (show.length === letters.length) {
+    clearGame();
+    startScreen.classList.remove('start');
+    startScreen.classList.add('win');
+    startScreen.style.display = "flex";
+    //addPhraseToDisplay(phrases);
+  } else if (missed >= 5) {
+    clearGame();
+    startScreen.classList.remove('start');
+    startScreen.classList.add('lose');
+    startScreen.style.display = "flex";
+    //addPhraseToDisplay(phrases);
+  }
+}
+
 // Start play
 startButton.addEventListener('click', (e) => {
-  //addPhraseToDisplay(phrases);
+  addPhraseToDisplay(phrases);
   startScreen.style.display = "none";
 });
 
-addPhraseToDisplay(phrases);
+// addPhraseToDisplay(phrases);
