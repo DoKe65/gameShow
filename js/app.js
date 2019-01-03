@@ -34,9 +34,9 @@ function addPhraseToDisplay(array) {
     let li = document.createElement('li');
     li.className = "letter";
     li.textContent = letter;
-      if (li.textContent === " ") {
-        li.className = "space";
-      }
+    if (li.textContent === " ") {
+      li.className = "space";
+    }
     ul.appendChild(li);
   }
   return letters;
@@ -74,13 +74,13 @@ function clearGame() {
   resetHearts();
 }
 
-function checkLetter (clicked, array) {
+function checkLetter(clicked, array) {
   let letter = null;
   for (let i = 0; i < array.length; i++) {
-    if(clicked.textContent === array[i].textContent.toLowerCase()) {
+    if (clicked.textContent === array[i].textContent.toLowerCase()) {
       letter = array[i].textContent.toLowerCase();
       array[i].classList.add("show");
-      array[i].style.transition =  "all 3s ease";
+      array[i].style.transition = "all 3s ease";
     }
     clicked.classList.add("chosen");
     clicked.setAttribute("disabled", true);
