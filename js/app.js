@@ -10,26 +10,28 @@ const phrases = [
   "Take a break",
   "I love to code",
   "Do what you want",
-  "Someday never comes"
+  "Treehouse is cool"
 ];
 
 const startButton = document.querySelector('.btn__reset');
 const startScreen = document.getElementById('overlay');
 
+const title = document.querySelector('.title');
+
 // Choose random phrase
 function getRandomPhraseArray(array) {
-  const index = Math.floor(Math.random() * phrases.length);
-  const phrase = array[index];
-  const letters = phrase.split("");
+  let index = Math.floor(Math.random() * phrases.length);
+  let phrase = array[index].toUpperCase();
+  let letters = phrase.split("");
   return letters;
 }
 
 // Split phrase into letters and create list items for each letter
 function addPhraseToDisplay(array) {
-  const letters = getRandomPhraseArray(array);
+  let letters = getRandomPhraseArray(array);
   for (let i = 0; i < letters.length; i++) {
-    const letter = letters[i];
-    const li = document.createElement('li');
+    let letter = letters[i];
+    let li = document.createElement('li');
     li.className = "letter";
     li.textContent = letter;
       if (li.textContent === " ") {
@@ -37,39 +39,32 @@ function addPhraseToDisplay(array) {
       }
     ul.appendChild(li);
   }
-  // return letters;
+  return letters;
 }
 
 // reset phrase section
 function resetPhrase() {
   let phraseUl = document.querySelector('ul');
-  let phraseSection = phraseUl.parentNode;
-  phraseSection.removeChild(phraseUl);
-  let newUl = document.createElement('ul');
-  phraseSection.appendChild(newUl);
-  // let phrases = getRandomPhraseArray(array);
-  // addPhraseToDisplay(array);
-  // return phrases;
+  phraseUl.innerHTML = "";
 }
 
 // reset keyboard
 function resetKeyboard() {
   let quertyKeys = document.querySelectorAll('.chosen');
   for (let i = 0; i < quertyKeys.length; i++) {
-    quertyKeys[i].setAttribute('disabled', false);
+    quertyKeys[i].removeAttribute('disabled');
     quertyKeys[i].classList.remove('chosen');
   }
 }
 
 // reset lives
 function resetHearts() {
-  const ol = document.querySelector('ol');
-  const lives = ol.querySelectorAll('img');
+  let ol = document.querySelector('ol');
+  let lives = ol.querySelectorAll('img');
   for (let i = 0; i < lives.length; i++) {
-    lives[i].setAttribute('src', 'images/liveHeart.png');
+    lives[i].setAttribute('src', 'images/green-bullet.png');
   }
 }
-
 
 // reset game
 function clearGame() {
@@ -77,41 +72,42 @@ function clearGame() {
   resetPhrase();
   resetKeyboard();
   resetHearts();
-  //addPhraseToDisplay(array);
+}
+
+function checkLetter (clicked, array) {
+  let letter = null;
+  for (let i = 0; i < array.length; i++) {
+    if(clicked.textContent === array[i].textContent.toLowerCase()) {
+      letter = array[i].textContent.toLowerCase();
+      array[i].classList.add("show");
+      array[i].style.transition =  "all 3s ease";
+    }
+    clicked.classList.add("chosen");
+    clicked.setAttribute("disabled", true);
+  }
+  return letter;
 }
 
 // check keyboard input to compare with letters in phrase
 qwerty.addEventListener('click', (e) => {
   let letterFound;
   if (e.target.tagName === "BUTTON") {
-    const clicked = e.target;
-    const lis = ul.children;
-    const letters = [];
+    let clicked = e.target;
+    let lis = ul.children;
+    let letters = [];
 
     for (let i = 0; i < lis.length; i++) {
       if (lis[i].className === "letter") {
         letters.push(lis[i]);
       }
     }
-    checkLetter(clicked);
-    function checkLetter (clicked) {
-      let letter = null;
-      for (let i = 0; i < letters.length; i++) {
-        if(clicked.textContent === letters[i].textContent.toLowerCase()) {
-          letter = letters[i].textContent.toLowerCase();
-          letters[i].classList.add("show");
-        }
-        clicked.classList.add("chosen");
-        clicked.setAttribute("disabled", true);
-      }
-      return letter;
-    }
-    letterFound = checkLetter(clicked);
+
+    letterFound = checkLetter(clicked, letters);
 
     if (letterFound === null) {
-      const ol = document.querySelector('ol');
-      const lives = ol.getElementsByTagName('img');
-      lives[missed].setAttribute('src', 'images/lostHeart.png');
+      let ol = document.querySelector('ol');
+      let lives = ol.getElementsByTagName('img');
+      lives[missed].setAttribute('src', 'images/orange-bullet.png');
       missed++;
     }
   }
@@ -119,22 +115,23 @@ qwerty.addEventListener('click', (e) => {
 });
 
 function checkWin() {
-  const show = document.getElementsByClassName('show');
-  const letters = document.getElementsByClassName('letter');
-  startButton.textContent = "Reset Game";
+  let show = document.getElementsByClassName('show');
+  let letters = document.getElementsByClassName('letter');
+  let startScreenClass = startScreen.className;
+  startButton.textContent = "New Game";
 
   if (show.length === letters.length) {
     clearGame();
-    startScreen.classList.remove('start');
+    startScreen.classList.remove(startScreenClass);
     startScreen.classList.add('win');
     startScreen.style.display = "flex";
-    //addPhraseToDisplay(phrases);
+    title.innerHTML = "Congatulations - you're a winner!";
   } else if (missed >= 5) {
     clearGame();
-    startScreen.classList.remove('start');
+    startScreen.classList.remove(startScreenClass);
     startScreen.classList.add('lose');
     startScreen.style.display = "flex";
-    //addPhraseToDisplay(phrases);
+    title.innerHTML = "Sorry - no lives left, you lost!";
   }
 }
 
@@ -143,5 +140,3 @@ startButton.addEventListener('click', (e) => {
   addPhraseToDisplay(phrases);
   startScreen.style.display = "none";
 });
-
-// addPhraseToDisplay(phrases);
