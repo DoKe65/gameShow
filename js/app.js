@@ -117,21 +117,18 @@ qwerty.addEventListener('click', (e) => {
 function checkWin() {
   let show = document.getElementsByClassName('show');
   let letters = document.getElementsByClassName('letter');
-  let startScreenClass = startScreen.className;
   startButton.textContent = "New Game";
 
   if (show.length === letters.length) {
     clearGame();
-    startScreen.classList.remove(startScreenClass);
-    startScreen.classList.add('win');
+    startScreen.className = 'win';
     startScreen.style.display = "flex";
-    title.innerHTML = "Congatulations - you're a winner!";
+    title.textContent = "Congatulations - you're a winner!";
   } else if (missed >= 5) {
     clearGame();
-    startScreen.classList.remove(startScreenClass);
-    startScreen.classList.add('lose');
+    startScreen.className = 'lose';
     startScreen.style.display = "flex";
-    title.innerHTML = "Sorry - no lives left, you lost!";
+    title.textContent = "Sorry - no lives left, you lost!";
   }
 }
 
